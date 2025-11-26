@@ -16,4 +16,11 @@ public class TestDirectory {
     void tearDown() {
         directory.delete();
     }
+
+    @Test
+    void TestNotExistDirectory() {
+        directory = new File("Not Exist");
+
+        assertThrows(IllegalArgumentException.class, () -> Directory.sortAlphabetically(directory), "Should throw NullPointerException if directory is doesnt exist");
+    }
 }
