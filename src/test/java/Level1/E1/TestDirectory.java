@@ -23,4 +23,12 @@ public class TestDirectory {
 
         assertThrows(IllegalArgumentException.class, () -> Directory.sortAlphabetically(directory), "Should throw NullPointerException if directory is doesnt exist");
     }
+
+    @Test
+    void TestEmptyDirectory() {
+        directory = new File("Empty");
+        directory.mkdir();
+
+        assertThrows(IllegalArgumentException.class, () -> Directory.sortAlphabetically(directory), "Should throw exception if directory empty");
+    }
 }
