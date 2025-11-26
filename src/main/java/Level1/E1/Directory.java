@@ -5,6 +5,9 @@ import java.util.Arrays;
 
 public class Directory {
     public static String[] sortAlphabetically(File directory) {
+        if (!directory.isDirectory() || !directory.exists()) {
+            throw new IllegalArgumentException("The directory is invalid or Null");
+        }
         String[] files = directory.list();
         if (files == null || files.length == 0) {
             throw new IllegalArgumentException("Must have at least one file");
