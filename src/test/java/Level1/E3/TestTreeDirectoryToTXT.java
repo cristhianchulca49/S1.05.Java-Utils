@@ -2,6 +2,7 @@ package Level1.E3;
 
 import org.junit.jupiter.api.*;
 import java.io.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 class TestTreeDirectoryToTXT {
 
@@ -44,5 +45,25 @@ class TestTreeDirectoryToTXT {
             }
         }
         file.delete();
+    }
+
+    @Test
+    void testInvalidDirectoryThrowsException() {
+        File invalid = new File("NoSuchDir");
+
+        assertThrows(IllegalArgumentException.class, () ->
+                TreeDirectoryToTXT.listTreeDirectory(invalid, outputFile)
+        );
+    }
+
+    @Test
+    void testEmptyDirectoryThrowsException() {
+        File emptyDir = new File("EmptyDir");
+        emptyDir.mkdir();
+
+        assertThrows(IllegalArgumentException.class, () ->
+                TreeDirectoryToTXT.listTreeDirectory(emptyDir, outputFile)
+        );
+        emptyDir.delete();
     }
 }
