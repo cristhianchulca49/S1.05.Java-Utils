@@ -6,6 +6,10 @@ import java.util.Comparator;
 
 public class TreeDirectory {
 
+    public static void listTreeDirectory(File directory) {
+        validateDirectory(directory);
+        sortAlphabetically(directory, 0);
+    }
 
     private static void sortAlphabetically(File directory, int ident) {
         File[] files = directory.listFiles();
