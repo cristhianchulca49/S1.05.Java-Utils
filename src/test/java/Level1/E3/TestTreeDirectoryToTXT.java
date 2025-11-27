@@ -2,6 +2,8 @@ package Level1.E3;
 
 import org.junit.jupiter.api.*;
 import java.io.*;
+import java.nio.file.Files;
+import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 class TestTreeDirectoryToTXT {
@@ -65,5 +67,23 @@ class TestTreeDirectoryToTXT {
                 TreeDirectoryToTXT.listTreeDirectory(emptyDir, outputFile)
         );
         emptyDir.delete();
+    }
+
+    @Test
+    void testSaveTreeToFile() throws IOException {
+
+        TreeDirectoryToTXT.listTreeDirectory(rootDir, outputFile);
+
+        assertTrue(outputFile.exists(), "Output file should exist");
+
+        List<String> lines = Files.readAllLines(outputFile.toPath());
+
+        assertTrue(lines.stream().anyMatch(l -> l.contains("D - Alpha")));
+        assertTrue(lines.stream().anyMatch(l -> l.contains("D - Sub")));
+        assertTrue(lines.stream().anyMatch(l -> l.contains("F - aaa.log")));
+        assertTrue(lines.stream().anyMatch(l -> l.contains("F - notes.txt")));
+        assertTrue(lines.stream().anyMatch(l -> l.contains("D - Zeta")));
+        assertTrue(lines.stream().anyMatch(l -> l.contains("F - music.mp3")));
+
     }
 }
