@@ -23,5 +23,11 @@ public class TestTreeDirectory {
         }
         file.delete();
     }
+
+    @Test
+    void testNotExistDirectory() {
+        root = new File("Not Exist");
+        assertThrows(IllegalArgumentException.class, () -> TreeDirectory.listTreeDirectory(root), "Should throw IllegalArgumentException if directory is doesnt exist");
+    }
 }
 
