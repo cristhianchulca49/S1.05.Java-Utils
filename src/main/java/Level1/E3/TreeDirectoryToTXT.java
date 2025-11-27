@@ -1,6 +1,8 @@
 package Level1.E3;
 
 import java.io.*;
+import java.util.Arrays;
+import java.util.Comparator;
 
 public class TreeDirectoryToTXT {
 
@@ -11,8 +13,25 @@ public class TreeDirectoryToTXT {
         }
     }
 
-    private static void sortAlphabetically(File directory, int ident, BufferedWriter writer) throws IOException {
+    private static void sortAlphabetically(File directory, int ident,  BufferedWriter writer) throws IOException {
+        File[] files = directory.listFiles();
+        Arrays.sort(files, Comparator.comparing(File::getName, String.CASE_INSENSITIVE_ORDER));
+        for (File file : files) {
+            writeFileInfo(file, ident, writer);
+            if (file.isDirectory()) {
+                sortAlphabetically(file, ident + 1, writer);
+            }
+        }
+    }
 
+    private static void writeFileInfo(File file, int ident, BufferedWriter writer) throws IOException {
+        String level = "    ".repeat(ident);
+        String type = file.isDirectory() ? "D" : "F";
+        String name = file.getName();
+        String date = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+                .format(file.lastModified());
+
+        writer.write(level + type + " - " + name + " | " + date);
     }
 
     private static void validateDirectory(File directory) {
