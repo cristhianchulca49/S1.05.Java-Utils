@@ -3,6 +3,10 @@ package Level1.E2;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import java.io.File;
+import static org.junit.jupiter.api.Assertions.*;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.PrintStream;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -28,6 +32,13 @@ public class TestTreeDirectory {
     void testNotExistDirectory() {
         root = new File("Not Exist");
         assertThrows(IllegalArgumentException.class, () -> TreeDirectory.listTreeDirectory(root), "Should throw IllegalArgumentException if directory is doesnt exist");
+    }
+
+    @Test
+    void testEmptyDirectory() {
+        root = new File("Empty");
+        root.mkdir();
+        assertThrows(IllegalArgumentException.class, () -> TreeDirectory.listTreeDirectory(root), "Should throw IllegalArgumentException if directory is empty");
     }
 }
 
