@@ -19,7 +19,13 @@ public class TreeDirectory {
     }
 
     private static void printTreeDirectory(File file, int ident) {
+        String level = "    ".repeat(ident);
+        String type = file.isDirectory() ? "D" : "F";
+        String name = file.getName();
+        String date = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+                .format(file.lastModified());
 
+        System.out.println(level + type + " - " + name + " | " + date);
     }
 
     private static void validateDirectory(File directory) {
