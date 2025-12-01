@@ -10,6 +10,11 @@ import java.util.stream.Stream;
 
 
 public class DirectorySerialized {
+    public static void directoryToFile(Path directory, Path pathNameTXTFile ) throws IOException {
+        validateDirectory(directory);
+        writeTXTFile(sortAlphabetically(directory), pathNameTXTFile);
+    }
+
     private static List<Path> sortAlphabetically(Path directory) throws IOException {
         try (Stream<Path> filesDirectory = Files.walk(directory)) {
             return filesDirectory
@@ -18,8 +23,8 @@ public class DirectorySerialized {
         }
     }
 
-    private static void writeTXTFile(List<Path> directory, Path pathNameTXTFile) throws IOException {
-        try (BufferedWriter writer = Files.newBufferedWriter(pathNameTXTFile)) {
+    private static void writeTXTFile(List<Path> directory, Path pathName ) throws IOException {
+        try (BufferedWriter writer = Files.newBufferedWriter(pathName)) {
             for (Path path : directory) {
                 String type = Files.isDirectory(path) ? "D" : "F";
                 String name = path.getFileName().toString();
