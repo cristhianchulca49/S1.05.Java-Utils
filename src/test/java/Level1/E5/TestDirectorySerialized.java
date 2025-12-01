@@ -79,7 +79,6 @@ public class TestDirectorySerialized {
     void testDirectoryToFileAndSerialization() throws Exception {
 
         List<String> lines = DirectorySerialized.readTxtFile(outputFile.toPath());
-
         DirectorySerialized.serialize(lines, serFile);
         assertTrue(serFile.exists());
 
