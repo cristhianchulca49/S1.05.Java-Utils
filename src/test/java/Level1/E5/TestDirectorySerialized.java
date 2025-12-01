@@ -1,6 +1,5 @@
 package Level1.E5;
 
-import Level1.E3.TreeDirectoryToTXT;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -8,39 +7,58 @@ import org.junit.jupiter.api.io.TempDir;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TestDirectorySerialized {
-    Path root;
-    Path outputFile;
+    File root;
+    File outputFile;
 
     @BeforeEach
-    public void setUp(@TempDir Path tempDir) throws IOException {
-        root = tempDir.resolve("TestRoot");
-        Files.createDirectories(root);
+    public void setUp(@TempDir File tempDir) throws IOException {
+        root = new File("TestRoot");
+        root.mkdir();
 
-        Path alpha = root.resolve("Alpha");
-        Path sub = alpha.resolve("Sub");
-        Path zeta = tempDir.resolve("Zeta");
+        File alpha = new File(root, "Alpha");
+        File sub = new File(alpha, "Sub");
+        File zeta = new File(root, "Zeta");
 
-        Files.createDirectories(sub);
-        Files.createDirectories(zeta);
+        sub.mkdirs();
+        zeta.mkdir();
 
-        Files.createFile(tempDir.resolve("music.mp3"));
-        Files.createFile(sub.resolve("notes.txt"));
-        Files.createFile(sub.resolve("aaa.log"));
+        new File(root, "music.mp3").createNewFile();
+        new File(sub, "notes.txt").createNewFile();
+        new File(sub, "aaa.log").createNewFile();
 
-        outputFile = tempDir.resolve("output.txt");
-        Files.createFile(outputFile);
+        outputFile = new File("tree_output.txt");
     }
 
     @Test
     void testInvalidDirectoryThrowsException() {
-        Path invalid = root.resolve("invalid");
+        File invalid = new File("invalid");
         assertThrows(IllegalArgumentException.class, () ->
                 DirectorySerialized.directoryToFile(invalid, outputFile)
         );
     }
+
+    @Test
+    void testSaveTreeToFile() throws IOException {
+
+        DirectorySerialized.directoryToFile(root, outputFile);
+
+        assertTrue(outputFile.exists(), "Output file should exist");
+
+        List<String> lines = Files.readAllLines(outputFile.toPath());
+
+        assertTrue(lines.stream().anyMatch(l -> l.contains("D - Alpha")));
+        assertTrue(lines.stream().anyMatch(l -> l.contains("D - Sub")));
+        assertTrue(lines.stream().anyMatch(l -> l.contains("F - aaa.log")));
+        assertTrue(lines.stream().anyMatch(l -> l.contains("F - notes.txt")));
+        assertTrue(lines.stream().anyMatch(l -> l.contains("D - Zeta")));
+        assertTrue(lines.stream().anyMatch(l -> l.contains("F - music.mp3")));
+
+    }
+
 }

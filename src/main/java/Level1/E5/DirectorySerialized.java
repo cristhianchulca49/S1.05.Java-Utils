@@ -1,47 +1,48 @@
 package Level1.E5;
 
 import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Stream;
-
 
 public class DirectorySerialized {
-    public static void directoryToFile(Path directory, Path pathNameTXTFile) throws IOException {
+    public static void directoryToFile(File directory, File pathNameTXTFile) throws IOException {
         validateDirectory(directory);
-        writeTXTFile(sortAlphabetically(directory), pathNameTXTFile);
-    }
-
-    private static List<Path> sortAlphabetically(Path directory) throws IOException {
-        try (Stream<Path> filesDirectory = Files.walk(directory)) {
-            return filesDirectory
-                    .sorted(Comparator.comparing(file -> file.getFileName().toString(), String.CASE_INSENSITIVE_ORDER))
-                    .toList();
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(pathNameTXTFile, true))) {
+            writeDirectoryTree(directory, writer, 0);
         }
     }
 
-    private static void writeTXTFile(List<Path> directory, Path pathName) throws IOException {
-        try (BufferedWriter writer = Files.newBufferedWriter(pathName)) {
-            for (Path path : directory) {
-                String type = Files.isDirectory(path) ? "D" : "F";
-                String name = path.getFileName().toString();
-                String lastModified = Files.getLastModifiedTime(path)
-                        .toInstant()
-                        .toString()
-                        .replace("T", " ")
-                        .substring(0, 19);
+    private static void writeDirectoryTree(File dir, BufferedWriter writer, int level) throws IOException {
+        File[] files = dir.listFiles();
+        if (files == null) return;
 
-                writer.write(type + " - " + name + " | " + lastModified);
-                writer.newLine();
+        Arrays.sort(files, Comparator.comparing(f -> f.getName().toLowerCase()));
+
+        for (File f : files) {
+            String type = f.isDirectory() ? "D" : "F";
+            String date = Files.getLastModifiedTime(f.toPath())
+                    .toInstant()
+                    .toString()
+                    .replace("T", " ")
+                    .substring(0, 19);
+            String indent = "    ".repeat(level);
+            writer.write(indent + type + " - " + f.getName() + " | " + date);
+            writer.newLine();
+
+            if (f.isDirectory()) {
+                writeDirectoryTree(f, writer, level + 1);
             }
         }
     }
 
-    private static void validateDirectory(Path directory) {
-        if (Files.notExists(directory) || !Files.isDirectory(directory)) {
+    private static void validateDirectory(File directory) {
+        if (!directory.exists() || !directory.isDirectory()) {
             throw new IllegalArgumentException("Directory does not valid");
         }
     }
