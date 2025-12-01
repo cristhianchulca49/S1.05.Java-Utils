@@ -1,16 +1,17 @@
 package Level1.E5;
 
+import Level1.E4.ReadTXT;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TestDirectorySerialized {
     File root;
@@ -61,4 +62,14 @@ public class TestDirectorySerialized {
 
     }
 
+    @Test
+    void testReadTXT(@TempDir Path tempDir) throws IOException {
+        Path filePath = tempDir.resolve("Test.txt");
+        Files.writeString(filePath, "First Line\nSecond Line");
+        List <String> result = ReadTXT.readTxtFile(filePath);
+
+        assertEquals(2, result.size());
+        assertEquals("First Line", result.get(0));
+        assertEquals("Second Line", result.get(1));
+    }
 }
