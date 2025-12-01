@@ -10,7 +10,7 @@ import java.util.stream.Stream;
 
 
 public class DirectorySerialized {
-    public static void directoryToFile(Path directory, Path pathNameTXTFile ) throws IOException {
+    public static void directoryToFile(Path directory, Path pathNameTXTFile) throws IOException {
         validateDirectory(directory);
         writeTXTFile(sortAlphabetically(directory), pathNameTXTFile);
     }
@@ -23,7 +23,7 @@ public class DirectorySerialized {
         }
     }
 
-    private static void writeTXTFile(List<Path> directory, Path pathName ) throws IOException {
+    private static void writeTXTFile(List<Path> directory, Path pathName) throws IOException {
         try (BufferedWriter writer = Files.newBufferedWriter(pathName)) {
             for (Path path : directory) {
                 String type = Files.isDirectory(path) ? "D" : "F";
@@ -44,5 +44,11 @@ public class DirectorySerialized {
         if (Files.notExists(directory) || !Files.isDirectory(directory)) {
             throw new IllegalArgumentException("Directory does not valid");
         }
+    }
+
+    public static List<String> readTxtTFile(Path path) throws IOException {
+        List<String> fileRead = Files.readAllLines(path);
+        fileRead.forEach(System.out::println);
+        return fileRead;
     }
 }
