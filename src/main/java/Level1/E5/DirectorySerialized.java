@@ -1,16 +1,14 @@
 package Level1.E5;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
-public class DirectorySerialized {
+public class DirectorySerialized implements Serializable {
+
     public static void directoryToFile(File directory, File pathNameTXTFile) throws IOException {
         validateDirectory(directory);
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(pathNameTXTFile, true))) {
@@ -43,13 +41,25 @@ public class DirectorySerialized {
 
     private static void validateDirectory(File directory) {
         if (!directory.exists() || !directory.isDirectory()) {
-            throw new IllegalArgumentException("Directory does not valid");
+            throw new IllegalArgumentException("Directory is not valid");
         }
     }
 
-    public static List<String> readTxtTFile(Path path) throws IOException {
+    public static List<String> readTxtFile(Path path) throws IOException {
         List<String> fileRead = Files.readAllLines(path);
         fileRead.forEach(System.out::println);
         return fileRead;
+    }
+
+    public static void serialize(Object obj, File outputFile) throws IOException {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(outputFile))) {
+            oos.writeObject(obj);
+        }
+    }
+
+    public static Object deserialize(File inputFile) throws IOException, ClassNotFoundException {
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(inputFile))) {
+            return ois.readObject();
+        }
     }
 }
