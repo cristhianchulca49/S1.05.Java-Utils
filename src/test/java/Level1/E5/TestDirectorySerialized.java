@@ -16,6 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class TestDirectorySerialized {
     File root;
     File outputFile;
+    File serFile;
 
     @BeforeEach
     public void setUp(@TempDir File tempDir) throws IOException {
@@ -34,6 +35,7 @@ public class TestDirectorySerialized {
         new File(sub, "aaa.log").createNewFile();
 
         outputFile = new File("tree_output.txt");
+        serFile = new File("directory.ser");
     }
 
     @Test
@@ -66,10 +68,23 @@ public class TestDirectorySerialized {
     void testReadTXT(@TempDir Path tempDir) throws IOException {
         Path filePath = tempDir.resolve("Test.txt");
         Files.writeString(filePath, "First Line\nSecond Line");
-        List <String> result = ReadTXT.readTxtFile(filePath);
+        List<String> result = ReadTXT.readTxtFile(filePath);
 
         assertEquals(2, result.size());
         assertEquals("First Line", result.get(0));
         assertEquals("Second Line", result.get(1));
+    }
+
+    @Test
+    void testDirectoryToFileAndSerialization() throws Exception {
+
+        List<String> lines = DirectorySerialized.readTxtFile(outputFile.toPath());
+
+        DirectorySerialized.serialize(lines, serFile);
+        assertTrue(serFile.exists());
+
+        @SuppressWarnings("unchecked")
+        List<String> deserialized = (List<String>) DirectorySerialized.deserialize(serFile);
+        assertEquals(lines, deserialized);
     }
 }
