@@ -10,9 +10,9 @@ import java.util.stream.Stream;
 
 
 public class DirectorySerialized {
-    private static void sortAlphabetically(Path directory) throws IOException {
+    private static List<Path> sortAlphabetically(Path directory) throws IOException {
         try (Stream<Path> filesDirectory = Files.walk(directory)) {
-            filesDirectory
+            return filesDirectory
                     .sorted(Comparator.comparing(file -> file.getFileName().toString(), String.CASE_INSENSITIVE_ORDER))
                     .toList();
         }
